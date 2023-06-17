@@ -1,91 +1,56 @@
+import ListItem from "./ListItem";
+import { useState } from "react";
+import FilterDisplay from "./FilterDisplay";
 import jobs from "../assets/jobs.json";
-import New from "./New";
-import Featured from "./Featured";
 
 function List() {
+  const [filtered, setFiltered] = useState([]);
+  
+  const filterHandler = (content) => {
+    if (!filtered.includes(content)) {
+      setFiltered((prevFiltered) => [...prevFiltered, content]);
+    }
+  };
+  const removeItemHandler = (removeContent) => {
+    const updatedFiltered = filtered.filter((item) => item !== removeContent);
+    setFiltered(updatedFiltered);
+  };
+  const clearAllHandler = () => {
+    setFiltered([]);
+  };
+
   return (
-    <ul className="mt-[3.5rem]">
-      {jobs.map((job) => (
-        <li
-          id="list-item"
-          className={`bg-white px-[1.5rem] py-[2rem] mb-[2.5rem] rounded-xl border-l-8 relative ${
-            job.featured ? " border-ddcyan" : "border-transparent"
-          }`}
-          key={job.id}
-        >
-          <div className="desktop:flex desktop:justify-between desktop:items-center">
-            <div className="flex">
-              <img
-                src={job.logo}
-                className="w-[48px] h-[48px] absolute desktop:static desktop:w-[88px] desktop:h-[88px] desktop:mr-[1.5rem] desktop:inline-block top-[-24px]"
-              />
+    <ul id="list-container" className="mt-[3.5rem] relative">
+      {/* //filter list display */}
+      <FilterDisplay
+        filtered={filtered}
+        removeItemHandler={removeItemHandler}
+        clearAllHandler={clearAllHandler}
+        filterHandler={filterHandler}
+      />
 
-              <div className="mb-[1rem]">
-                <div className="flex gap-[2rem] mb-[0.5rem]">
-                  <span className="text-ddcyan text-[0.8125rem] desktop:text-[1.125rem]">
-                    {job.company}
-                  </span>
-                  <div className="flex gap-[0.5rem]">
-                    {job.new === true && <New />}
-                    {job.featured === true && <Featured />}
-                  </div>
-                </div>
-
-                <div>
-                  <h2 className="hover:text-ddcyan cursor-pointer text-[0.9375rem] font-bold leading-[24px] desktop:text-[1.375rem] desktop:mb-[.4rem]">
-                    {job.position}
-                  </h2>
-                </div>
-
-                <div className="flex gap-[0.5rem] text-dgcyan font-reg text-[1rem] desktop:text-[1.375rem] tracking-[0.14px] desktop:gap-[.75rem]">
-                  {job.postedAt}
-                  <span> | </span>
-                  {job.contract}
-                  <span> | </span>
-                  {job.location}
-                </div>
-              </div>
-            </div>
-
-            <hr className="mb-[1rem] desktop:hidden" />
-
-            <div className="flex gap-[1rem] flex-wrap">
-              {job.languages.map((language) => (
-                <span
-                  id="category"
-                  className="hover:text-white hover:bg-ddcyan bg-lgcyan-bg px-[0.5rem] py-[5px] flex items-center justify-center rounded text-ddcyan cursor-pointer"
-                  key={language}
-                >
-                  {language}
-                </span>
-              ))}
-              {job.tools.map((tool) => (
-                <span
-                  id="category"
-                  className="hover:text-white hover:bg-ddcyan bg-lgcyan-bg px-[0.5rem] py-[5px] flex items-center justify-center rounded text-ddcyan cursor-pointer"
-                  key={tool}
-                >
-                  {tool}
-                </span>
-              ))}
-              <span
-                id="category"
-                className=" hover:text-white hover:bg-ddcyan bg-lgcyan-bg px-[0.5rem] py-[5px] flex items-center justify-center rounded text-ddcyan cursor-pointer"
-                key={job.role}
-              >
-                {job.role}
-              </span>
-              <span
-                id="category"
-                className=" hover:text-white hover:bg-ddcyan bg-lgcyan-bg px-[0.5rem] py-[5px] flex items-center justify-center rounded text-ddcyan cursor-pointer"
-                key={job.level}
-              >
-                {job.level}
-              </span>
-            </div>
-          </div>
-        </li>
-      ))}
+      {filtered.length === 0
+        ? jobs.map((job, index) => (
+            <ListItem
+              job={job}
+              key={job.id}
+              index={index}
+              filterHandler={filterHandler}
+            />
+          ))
+        : jobs
+            .filter((job) => {
+              const categories = [
+                ...job.languages,
+                ...job.tools,
+                job.role,
+                job.level,
+              ];
+              return categories.some((category) => filtered.includes(category));
+            })
+            .map((job) => (
+              <ListItem job={job} key={job.id} filterHandler={filterHandler} />
+            ))}
     </ul>
   );
 }
