@@ -1,5 +1,5 @@
-import headmb from '../assets/bg-header-mobile.svg'
-import headdk from '../assets/bg-header-desktop.svg'
+import headmb from '../../public/assets/bg-header-mobile.svg'
+import headdk from '../../public/assets/bg-header-desktop.svg'
 
 function Header() {
   return (

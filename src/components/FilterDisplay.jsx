@@ -1,5 +1,5 @@
 import React from "react";
-import remove from "../assets/icon-remove.svg";
+import remove from "../../public/assets/icon-remove.svg";
 
 function FilterDisplay({ filtered, removeItemHandler, clearAllHandler }) {
   return (

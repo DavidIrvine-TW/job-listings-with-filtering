@@ -1,7 +1,7 @@
 import ListItem from "./ListItem";
 import { useState } from "react";
 import FilterDisplay from "./FilterDisplay";
-import jobs from "../assets/jobs.json";
+import jobs from "../../public/assets/jobs.json";
 
 function List() {
   const [filtered, setFiltered] = useState([]);
